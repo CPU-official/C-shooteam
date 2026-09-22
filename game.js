@@ -37,7 +37,7 @@ let difficulty;
 let missionStarted = false;
 
 function resetGame() {
-  player = { x: 280, y: 540, width: 40, height: 40 };
+  player = { x: 430, y: 450, width: 40, height: 40 };
   bullets = [];
   enemies = [];
   explosions = [];
@@ -94,7 +94,7 @@ function update(delta) {
   if (gameOver || !missionStarted) return;
   if (keys.left) player.x -= 5;
   if (keys.right) player.x += 5;
-  player.x = Math.max(0, Math.min(560, player.x));
+  player.x = Math.max(0, Math.min(860, player.x));
 
   secondAccumulator += delta;
   spawnAccumulator += delta;
@@ -109,11 +109,11 @@ function update(delta) {
   }
   if (spawnAccumulator >= difficulty.spawnEvery) {
     const size = difficulty.minSize + Math.floor(Math.random() * difficulty.sizeRange);
-    enemies.push({ x: Math.floor(Math.random() * (600 - size)), y: -size, width: size, height: size, rotation: Math.random() * Math.PI, rotationSpeed: (Math.random() - 0.5) * 0.02 });
+    enemies.push({ x: Math.floor(Math.random() * (900 - size)), y: -size, width: size, height: size, rotation: Math.random() * Math.PI, rotationSpeed: (Math.random() - 0.5) * 0.02 });
     spawnAccumulator = 0;
   }
   if (ufoAccumulator >= 9000) {
-    enemies.push({ type: 'ufo', x: Math.floor(Math.random() * 520), y: -42, width: 80, height: 42, rotation: 0, rotationSpeed: 0 });
+    enemies.push({ type: 'ufo', x: Math.floor(Math.random() * 820), y: -42, width: 80, height: 42, rotation: 0, rotationSpeed: 0 });
     ufoAccumulator = 0;
   }
 
@@ -154,12 +154,12 @@ function update(delta) {
 
 function draw() {
   ctx.fillStyle = '#050b1b';
-  ctx.fillRect(0, 0, 600, 600);
+  ctx.fillRect(0, 0, 900, 600);
   drawStars();
   ctx.strokeStyle = 'rgba(104, 246, 225, .06)';
-  for (let line = 0; line <= 600; line += 60) {
+  for (let line = 0; line <= 900; line += 60) {
     ctx.beginPath(); ctx.moveTo(line, 0); ctx.lineTo(line, 600); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(0, line); ctx.lineTo(600, line); ctx.stroke();
+    if (line <= 600) { ctx.beginPath(); ctx.moveTo(0, line); ctx.lineTo(900, line); ctx.stroke(); }
   }
   drawShip();
   ctx.shadowBlur = 0;
@@ -170,8 +170,8 @@ function draw() {
 
 function drawStars() {
   ctx.fillStyle = '#b7c9ff';
-  for (let index = 0; index < 70; index += 1) {
-    const x = (index * 97) % 600;
+  for (let index = 0; index < 100; index += 1) {
+    const x = (index * 97) % 900;
     const y = (index * 151) % 600;
     const size = index % 7 === 0 ? 2 : 1;
     ctx.globalAlpha = 0.25 + ((index * 13) % 60) / 100;
