@@ -69,6 +69,16 @@
               <button id="startButton" type="button">START MISSION <span>[ ENTER ]</span></button>
             </div>
           </div>
+          <div id="pauseOverlay" class="pause-overlay" hidden>
+            <div class="pause-panel">
+              <p class="over-kicker">MISSION HOLD</p>
+              <h2>PAUSED</h2>
+              <div class="pause-actions">
+                <button id="resumeButton" type="button">RESUME <span>[ P ]</span></button>
+                <button id="endMissionButton" class="danger-button" type="button">END MISSION</button>
+              </div>
+            </div>
+          </div>
           <div id="gameOver" class="game-over" hidden>
             <p id="resultKicker" class="over-kicker">SIGNAL LOST</p>
             <h2 id="resultTitle">GAME OVER</h2>

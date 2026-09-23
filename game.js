@@ -12,11 +12,17 @@ const difficultyElement = document.querySelector('#difficulty');
 const resultKickerElement = document.querySelector('#resultKicker');
 const resultTitleElement = document.querySelector('#resultTitle');
 const resultMessageElement = document.querySelector('#resultMessage');
+const pauseOverlayElement = document.querySelector('#pauseOverlay');
+const resumeButton = document.querySelector('#resumeButton');
+const endMissionButton = document.querySelector('#endMissionButton');
+
+const startingLife = 3;
+const maximumLife = 5;
 
 const difficultySettings = {
-  easy: { life: 7, maxLife: 7, spawnEvery: 1600, speed: 0.65, minSize: 48, sizeRange: 24, fireInterval: 180, autoFire: true },
-  normal: { life: 5, maxLife: 7, spawnEvery: 1200, speed: 1.15, minSize: 38, sizeRange: 22, fireInterval: 180, autoFire: true },
-  hard: { life: 3, maxLife: 5, spawnEvery: 850, speed: 2.0, minSize: 30, sizeRange: 18, fireInterval: 450, autoFire: false }
+  easy: { spawnEvery: 1600, speed: 0.65, minSize: 48, sizeRange: 24, fireInterval: 180, autoFire: true },
+  normal: { spawnEvery: 1200, speed: 1.15, minSize: 38, sizeRange: 22, fireInterval: 180, autoFire: true },
+  hard: { spawnEvery: 850, speed: 2.0, minSize: 30, sizeRange: 18, fireInterval: 450, autoFire: false }
 };
 
 const keys = { left: false, right: false, firing: false };
@@ -35,6 +41,7 @@ let fireAccumulator;
 let ufoAccumulator;
 let difficulty;
 let missionStarted = false;
+let paused = false;
 
 function resetGame() {
   player = { x: 430, y: 450, width: 40, height: 40 };
@@ -43,10 +50,11 @@ function resetGame() {
   explosions = [];
   score = 0;
   difficulty = difficultySettings[difficultyElement.value];
-  life = difficulty.life;
+  life = startingLife;
   timeLeft = 100;
   gameOver = false;
   missionStarted = false;
+  paused = false;
   gameOverElement.classList.remove('clear');
   lastTimestamp = performance.now();
   secondAccumulator = 0;
@@ -55,6 +63,7 @@ function resetGame() {
   fireAccumulator = difficulty.fireInterval;
   gameOverElement.hidden = true;
   missionIntroElement.hidden = false;
+  pauseOverlayElement.hidden = true;
   updateHud();
 }
 
@@ -62,7 +71,7 @@ function updateHud() {
   scoreElement.textContent = String(score).padStart(4, '0');
   timeElement.textContent = String(timeLeft).padStart(3, '0');
   lifeElement.innerHTML = '';
-  for (let index = 0; index < 7; index += 1) {
+  for (let index = 0; index < maximumLife; index += 1) {
     const light = document.createElement('i');
     light.className = index >= life ? 'off' : '';
     lifeElement.append(light);
@@ -72,6 +81,8 @@ function updateHud() {
 
 function finishGame(cleared) {
   gameOver = true;
+  paused = false;
+  pauseOverlayElement.hidden = true;
   finalScoreElement.textContent = String(score).padStart(4, '0');
   resultKickerElement.textContent = cleared ? 'MISSION COMPLETE' : 'SIGNAL LOST';
   resultTitleElement.textContent = cleared ? 'MISSION CLEAR' : 'GAME OVER';
@@ -81,7 +92,7 @@ function finishGame(cleared) {
 }
 
 function shoot() {
-  if (gameOver || fireAccumulator < difficulty.fireInterval) return;
+  if (gameOver || paused || !missionStarted || fireAccumulator < difficulty.fireInterval) return;
   bullets.push({ x: player.x + 18, y: player.y - 28, width: 4, height: 42 });
   fireAccumulator = 0;
 }
@@ -91,7 +102,7 @@ function intersects(first, second, padding = 0) {
 }
 
 function update(delta) {
-  if (gameOver || !missionStarted) return;
+  if (gameOver || paused || !missionStarted) return;
   if (keys.left) player.x -= 5;
   if (keys.right) player.x += 5;
   player.x = Math.max(0, Math.min(860, player.x));
@@ -141,7 +152,7 @@ function update(delta) {
       enemies.splice(enemyIndex, 1);
       explosions.push({ x: enemy.x + enemy.width / 2, y: enemy.y + enemy.height / 2, radius: enemy.type === 'ufo' ? 16 : 8, life: 420, bonus: enemy.type === 'ufo' });
       if (enemy.type === 'ufo') {
-        life = Math.min(life + 1, difficulty.maxLife);
+        life = Math.min(life + 1, maximumLife);
         score += 3;
       } else {
         score += 1;
@@ -262,6 +273,7 @@ document.addEventListener('keydown', (event) => {
   if (event.code === 'ArrowLeft') { keys.left = true; event.preventDefault(); }
   if (event.code === 'ArrowRight') { keys.right = true; event.preventDefault(); }
   if (event.code === 'Space') { if (!keys.firing) shoot(); keys.firing = true; event.preventDefault(); }
+  if ((event.code === 'KeyP' || event.code === 'Escape') && missionStarted && !gameOver) { togglePause(); event.preventDefault(); }
   if (event.code === 'KeyR' && gameOver) resetGame();
 });
 document.addEventListener('keyup', (event) => {
@@ -270,11 +282,19 @@ document.addEventListener('keyup', (event) => {
   if (event.code === 'Space') keys.firing = false;
 });
 restartButton.addEventListener('click', resetGame);
+resumeButton.addEventListener('click', () => { paused = false; pauseOverlayElement.hidden = true; lastTimestamp = performance.now(); });
+endMissionButton.addEventListener('click', () => finishGame(false));
 difficultyElement.addEventListener('change', resetGame);
 function startMission() {
   missionStarted = true;
+  paused = false;
   missionIntroElement.hidden = true;
   lastTimestamp = performance.now();
+}
+function togglePause() {
+  paused = !paused;
+  pauseOverlayElement.hidden = !paused;
+  if (!paused) lastTimestamp = performance.now();
 }
 startButton.addEventListener('click', startMission);
 resetGame();
