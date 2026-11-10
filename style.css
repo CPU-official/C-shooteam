@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;600&display=swap');
+
 :root {
   --ink: #e9f4f2;
   --muted: #78918f;
@@ -6,97 +8,371 @@
   --yellow: #ffc857;
   --red: #ff5d73;
   --deep: #050b1b;
-  --panel: #0c201e;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  min-width: 320px;
-  background: #030611;
+  min-height: 100vh;
+  background: #0a0b0d;
   color: var(--ink);
   font-family: 'IBM Plex Mono', monospace;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 16px;
 }
 
-body::before {
-  position: fixed;
+/* 1. TV 겉 본체 (가로 폭 자유 확장) */
+.tv-casing {
+  width: min(1200px, 98vw);
+  background: linear-gradient(145deg, #24262b, #131417);
+  border: 6px solid #0a0b0c;
+  border-radius: 32px;
+  box-shadow:
+    0 35px 100px rgba(0, 0, 0, 0.95),
+    inset 0 2px 4px rgba(255, 255, 255, 0.07),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.8);
+  padding: 24px 32px 20px;
+}
+
+.tv-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  font-family: 'VT323', monospace;
+  color: #636770;
+}
+
+.tv-brand {
+  font-size: 22px;
+  letter-spacing: 2px;
+}
+
+.tv-brand span {
+  font-size: 15px;
+  color: #44474e;
+}
+
+.status-dot {
+  font-size: 14px;
+  color: #39ff14;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-dot span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #39ff14;
+  box-shadow: 0 0 10px #39ff14;
+}
+
+/* 2. TV 브라운관 테두리 베젤 */
+.tv-bezel {
+  position: relative;
+  background: #15171b;
+  border-radius: 36px;
+  padding: 24px 30px;
+  overflow: hidden;
+  box-shadow:
+    inset 0 0 45px #000,
+    inset 18px 18px 36px rgba(0, 0, 0, 0.95),
+    inset -18px -18px 36px rgba(255, 255, 255, 0.02);
+}
+
+/* 3. CRT 주사선 & 스캔라인 오버레이 */
+.crt-overlay {
+  position: absolute;
   inset: 0;
-  z-index: -1;
-  content: '';
-  opacity: .35;
-  background: radial-gradient(circle at 78% 18%, rgba(56, 73, 150, .24), transparent 27%), linear-gradient(rgba(42, 58, 112, .11) 1px, transparent 1px), linear-gradient(90deg, rgba(42, 58, 112, .11) 1px, transparent 1px);
-  background-size: 42px 42px;
+  z-index: 5;
+  pointer-events: none !important;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.8) 100%),
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.5) 50%);
+  background-size: 100% 100%, 100% 4px;
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.9);
 }
 
-.game-shell { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 52px 0 70px; }
-.topbar { display: flex; align-items: end; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 24px; }
-.eyebrow, .label, .board-heading, .status-dot, .mobile-hint { color: var(--muted); font-size: 11px; letter-spacing: .16em; }
-.eyebrow { margin: 0 0 8px; color: var(--green); }
-h1, h2, strong { font-family: 'Black Han Sans', sans-serif; font-weight: 400; letter-spacing: .04em; }
-h1 { margin: 0; color: var(--ink); font-size: clamp(32px, 5vw, 58px); line-height: .95; }
-.status-dot { display: flex; align-items: center; gap: 9px; padding-bottom: 5px; }
-.status-dot span { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 13px var(--green); }
-.game-layout { position: relative; display: flex; flex-direction: column; gap: 22px; padding-top: 42px; }
-.board-wrap { order: 1; width: min(100%, 900px); margin: 0 auto; }
-.hud-panel { order: 2; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; width: min(100%, 900px); margin: -118px auto 0; padding: 18px 20px 16px; position: relative; z-index: 2; border: 1px solid rgba(104, 246, 225, .26); background: rgba(5, 11, 27, .88); box-shadow: 0 -12px 30px rgba(3, 6, 17, .42); }
-.hud-block { border-left: 2px solid var(--line); padding-left: 18px; }
-.hud-block strong { display: block; margin-top: 5px; color: var(--green); font-size: 38px; line-height: 1; }
-.hud-block small { color: var(--muted); font: 12px 'IBM Plex Mono', monospace; }
-.life-lights { display: flex; gap: 8px; margin-top: 13px; }
-.life-lights i { display: block; width: 20px; height: 9px; background: var(--red); box-shadow: 0 0 9px rgba(255, 93, 115, .35); }
-.life-lights i.off { background: var(--line); box-shadow: none; }
-.controls { grid-column: 1 / -1; display: flex; align-items: center; gap: 20px; margin-top: 2px; padding-top: 13px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; line-height: 1.8; }
-.controls p { margin: 7px 0; }
-.difficulty-control { display: block; }
-select { display: block; width: 100%; margin-top: 9px; padding: 10px 8px; border: 1px solid #496461; background: #081b2c; color: var(--ink); font: 600 11px 'IBM Plex Mono', monospace; }
-select:focus-visible { border-color: var(--green); outline: 2px solid rgba(104, 246, 225, .25); }
-kbd { display: inline-flex; min-width: 25px; height: 23px; align-items: center; justify-content: center; margin-right: 6px; border: 1px solid #496461; color: var(--ink); font-size: 10px; }
-.bonus-key { display: inline-block; min-width: 43px; margin-right: 6px; color: var(--yellow); font-size: 10px; }
-.board-heading { display: flex; justify-content: space-between; margin-bottom: 11px; }
-.board-heading span:last-child { color: var(--red); }
-.canvas-frame { position: relative; width: 100%; aspect-ratio: 3 / 2; border: 1px solid #35467c; background: var(--deep); box-shadow: 0 20px 80px rgba(0, 0, 0, .4), 0 0 42px rgba(70, 88, 185, .12); }
-canvas { display: block; width: 100%; height: 100%; }
-.mission-intro { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; background: rgba(3, 7, 22, .82); }
-.mission-intro[hidden] { display: none; }
-.intro-panel { width: min(430px, 100%); padding: 30px 28px; border: 1px solid #4c70a0; background: rgba(8, 22, 48, .94); box-shadow: 0 0 35px rgba(104, 246, 225, .13); text-align: center; }
-.intro-panel h2 { margin: 8px 0 12px; color: var(--ink); font-size: clamp(27px, 5vw, 42px); }
-.intro-copy { margin: 0; color: #b2c7d8; font-size: 12px; line-height: 1.8; }
-.briefing-grid { display: grid; gap: 9px; margin: 24px 0 4px; padding: 16px 0; border-top: 1px solid #294a6c; border-bottom: 1px solid #294a6c; color: var(--ink); font-size: 11px; }
-.briefing-grid span { display: flex; align-items: center; justify-content: center; gap: 4px; }
-.briefing-grid kbd { height: 21px; min-width: 23px; margin-right: 2px; }
-.ufo-mark { min-width: 42px; margin-right: 5px; color: var(--green); font-size: 10px; }
-.game-over { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; background: rgba(4, 16, 15, .9); }
-.game-over[hidden] { display: none; }
-.pause-overlay { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; background: rgba(3, 7, 22, .78); }
-.pause-overlay[hidden] { display: none; }
-.pause-panel { width: min(350px, 100%); padding: 28px; border: 1px solid #4c70a0; background: rgba(8, 22, 48, .96); text-align: center; box-shadow: 0 0 35px rgba(104, 246, 225, .13); }
-.pause-panel h2 { margin: 0; color: var(--ink); font-size: clamp(36px, 7vw, 58px); }
-.pause-actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-.pause-actions button { margin-top: 18px; }
-.danger-button { border-color: var(--red); color: var(--red); }
-.danger-button:hover, .danger-button:focus-visible { background: var(--red); color: #26080d; }
-.over-kicker { margin: 0 0 12px; color: var(--red); font-size: 11px; letter-spacing: .2em; }
-.game-over h2 { margin: 0; color: var(--ink); font-size: clamp(36px, 7vw, 58px); }
-.game-over p:not(.over-kicker) { color: var(--muted); font-size: 12px; }
-.game-over p strong { color: var(--yellow); font-size: 20px; }
-.game-over.clear { background: rgba(3, 27, 30, .92); }
-.game-over.clear .over-kicker, .game-over.clear h2 { color: var(--green); }
-button { margin-top: 18px; padding: 13px 22px; border: 1px solid var(--green); background: transparent; color: var(--green); font: 600 12px 'IBM Plex Mono', monospace; letter-spacing: .12em; cursor: pointer; }
-button:hover, button:focus-visible { background: var(--green); color: #04100e; outline: none; }
-button span { color: var(--muted); margin-left: 9px; }
-.mobile-hint { display: none; }
+/* VCR 레트로 텍스트 */
+.vcr-hud {
+  position: absolute;
+  z-index: 6;
+  font-family: 'VT323', monospace;
+  font-size: 24px;
+  color: #ffffff;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
+  pointer-events: none !important;
+  line-height: 1.25;
+  letter-spacing: 1px;
+}
 
-@media (max-width: 780px) {
-  .game-shell { width: min(600px, calc(100% - 28px)); padding-top: 28px; }
-  .topbar { align-items: start; }
-  .status-dot { padding-top: 5px; font-size: 9px; }
-  .game-layout { gap: 18px; padding-top: 28px; }
-  .hud-panel { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: -88px; padding: 14px 10px 12px; }
-  .hud-block { padding-left: 10px; }
-  .hud-block strong { font-size: 26px; }
-  .difficulty-block select { font-size: 9px; padding: 9px 4px; }
-  .controls { display: none; }
-  .life-lights i { width: 13px; }
-  .mobile-hint { display: block; margin: 12px 0 0; text-align: center; font-size: 9px; }
-  .intro-panel { padding: 24px 16px; }
+.vcr-top-left {
+  top: 40px;
+  left: 48px;
+}
+
+.vcr-top-right {
+  top: 40px;
+  right: 48px;
+  text-align: right;
+}
+
+.vcr-bottom-left {
+  bottom: 40px;
+  left: 48px;
+}
+
+/* 4. ★ 핵심: 세로는 600px(또는 지정 높이)로 고정하고 가로만 확장 ★ */
+.board-wrap {
+  position: relative;
+  width: 100%;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.95);
+}
+
+.canvas-frame {
+  position: relative;
+  width: 100%;
+  /* 세로 높이는 550px로 고정, 가로는 전체에 맞춰 늘어남 */
+  height: 550px;
+  background: var(--deep);
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: contrast(1.08) brightness(1.04);
+}
+
+/* 자바스크립트 hidden 강제 적용 */
+[hidden],
+.mission-intro[hidden],
+.pause-overlay[hidden],
+.game-over[hidden] {
+  display: none !important;
+}
+
+/* 오버레이 팝업 */
+.mission-intro,
+.pause-overlay,
+.game-over {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(3, 7, 22, 0.88);
+  text-align: center;
+}
+
+.intro-panel,
+.pause-panel {
+  position: relative;
+  z-index: 21;
+  pointer-events: auto;
+  width: min(420px, 90%);
+  padding: 26px;
+  border: 1px solid #4c70a0;
+  background: rgba(8, 22, 48, 0.95);
+  box-shadow: 0 0 40px rgba(104, 246, 225, .15);
+  border-radius: 8px;
+}
+
+.over-kicker {
+  margin: 0 0 8px;
+  color: var(--red);
+  font-size: 12px;
+  letter-spacing: .2em;
+}
+
+h2 {
+  margin: 0 0 14px;
+  color: var(--ink);
+  font-size: 32px;
+}
+
+.intro-copy {
+  margin: 0;
+  color: #b2c7d8;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.briefing-grid {
+  display: grid;
+  gap: 8px;
+  margin: 18px 0;
+  padding: 12px 0;
+  border-top: 1px solid #294a6c;
+  border-bottom: 1px solid #294a6c;
+  font-size: 12px;
+}
+
+kbd {
+  display: inline-flex;
+  min-width: 24px;
+  height: 22px;
+  align-items: center;
+  justify-content: center;
+  margin-right: 4px;
+  border: 1px solid #496461;
+  font-size: 11px;
+}
+
+.ufo-mark {
+  color: var(--yellow);
+}
+
+button {
+  position: relative;
+  z-index: 25;
+  margin-top: 14px;
+  padding: 12px 20px;
+  border: 1px solid var(--green);
+  background: rgba(104, 246, 225, 0.1);
+  color: var(--green);
+  font: 600 12px 'IBM Plex Mono', monospace;
+  letter-spacing: .12em;
+  cursor: pointer;
+  pointer-events: auto !important;
+}
+
+button:hover {
+  background: var(--green);
+  color: #04100e;
+}
+
+.danger-button {
+  border-color: var(--red);
+  color: var(--red);
+  background: rgba(255, 93, 115, 0.1);
+}
+
+.danger-button:hover {
+  background: var(--red);
+  color: #26080d;
+}
+
+/* 5. 하단 HUD 패널 */
+.hud-panel {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+  padding: 12px 20px;
+  background: #101217;
+  border: 1px solid #1d222b;
+  border-radius: 12px;
+}
+
+.hud-block {
+  border-left: 2px solid var(--line);
+  padding-left: 14px;
+}
+
+.label {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: .16em;
+}
+
+.hud-block strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--green);
+  font-size: 28px;
+  line-height: 1;
+}
+
+.hud-block small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.life-lights {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.life-lights i {
+  display: block;
+  width: 16px;
+  height: 8px;
+  background: var(--red);
+  box-shadow: 0 0 6px rgba(255, 93, 115, .4);
+}
+
+.life-lights i.off {
+  background: var(--line);
+  box-shadow: none;
+}
+
+select {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  padding: 6px;
+  border: 1px solid #496461;
+  background: #081b2c;
+  color: var(--ink);
+  font: 600 11px 'IBM Plex Mono', monospace;
+}
+
+/* 6. TV 하단 조율 스피커 및 다이얼 */
+.tv-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  padding: 0 6px;
+}
+
+.speaker-grill {
+  display: flex;
+  gap: 8px;
+}
+
+.speaker-grill span {
+  width: 6px;
+  height: 20px;
+  background: #090a0c;
+  border-radius: 3px;
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.tv-knobs {
+  display: flex;
+  gap: 16px;
+}
+
+.knob {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #363a42, #0a0b0d);
+  border: 2px solid #070809;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.7);
+}
+
+.knob-marker {
+  width: 2px;
+  height: 12px;
+  background: #636770;
+  transform: translateY(-4px);
 }

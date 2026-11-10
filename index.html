@@ -1,61 +1,51 @@
 <!doctype html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ASTRA // 소행성 파괴 작전</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;600&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <main class="game-shell">
-    <header class="topbar">
-      <div>
-        <p class="eyebrow">CPU // SHOOTING LAB</p>
-        <h1>ASTRA // 소행성 파괴 작전</h1>
-      </div>
-      <div class="status-dot"><span></span> SYSTEM ONLINE</div>
+  <div class="tv-casing">
+    <!-- 상단 브랜딩 & 상태 LED -->
+    <header class="tv-header">
+      <div class="tv-brand">SPACE-O-VISION <span>MODEL-1984</span></div>
+      <div class="status-dot"><span></span> POWER ON</div>
     </header>
 
-    <section class="game-layout" aria-label="슈팅 게임">
-      <aside class="hud-panel">
-        <div class="hud-block">
-          <span class="label">SCORE</span>
-          <strong id="score">0000</strong>
-        </div>
-        <div class="hud-block">
-          <span class="label">LIFE</span>
-          <div id="life" class="life-lights" aria-label="남은 생명 5개"></div>
-        </div>
-        <div class="hud-block timer-block">
-          <span class="label">MISSION TIME</span>
-          <strong><span id="time">100</span><small> SEC</small></strong>
-        </div>
-        <div class="hud-block difficulty-block">
-          <label class="difficulty-control" for="difficulty">
-            <span class="label">DIFFICULTY</span>
-            <select id="difficulty">
-              <option value="easy">하 / CADET</option>
-              <option value="normal" selected>중 / PILOT</option>
-              <option value="hard">상 / ACE</option>
-            </select>
-          </label>
-        </div>
-        <div class="controls">
-          <span class="label">CONTROL MAP</span>
-          <p><kbd>←</kbd><kbd>→</kbd> STEER</p>
-          <p><kbd>SPACE</kbd> LASER</p>
-          <p><span class="bonus-key">UFO</span> +1 LIFE</p>
-          <p><kbd>R</kbd> RESTART</p>
-        </div>
-      </aside>
+    <!-- CRT 화면 베젤 -->
+    <div class="tv-bezel">
+      <!-- 스캔라인 및 주사선 굴곡 오버레이 -->
+      <div class="crt-overlay"></div>
 
+      <!-- VCR 화면 텍스트 레이어 -->
+      <div class="vcr-hud vcr-top-left">
+        <div>CAMERA1</div>
+        <div>PLAY ▶</div>
+        <div>00:02:20</div>
+      </div>
+      <div class="vcr-hud vcr-top-right">
+        <div>VCR TAPE</div>
+        <div>IPHONE</div>
+      </div>
+      <div class="vcr-hud vcr-bottom-left">
+        <div>11:20</div>
+        <div>14.09.1997 SAT</div>
+      </div>
+
+      <!-- 게임 캔버스 영역 -->
       <div class="board-wrap">
-        <div class="board-heading"><span>DEEP SPACE // SECTOR 07</span><span>ASTEROID FIELD</span></div>
         <div class="canvas-frame">
           <canvas id="gameCanvas" width="900" height="600" aria-label="게임 화면"></canvas>
+
+          <!-- 미션 시작 화면 -->
           <div id="missionIntro" class="mission-intro">
             <div class="intro-panel">
               <p class="over-kicker">ASTRA // FLIGHT BRIEFING</p>
@@ -69,6 +59,8 @@
               <button id="startButton" type="button">START MISSION <span>[ ENTER ]</span></button>
             </div>
           </div>
+
+          <!-- 일시정지 오버레이 -->
           <div id="pauseOverlay" class="pause-overlay" hidden>
             <div class="pause-panel">
               <p class="over-kicker">MISSION HOLD</p>
@@ -79,6 +71,8 @@
               </div>
             </div>
           </div>
+
+          <!-- 게임 오버 화면 -->
           <div id="gameOver" class="game-over" hidden>
             <p id="resultKicker" class="over-kicker">SIGNAL LOST</p>
             <h2 id="resultTitle">GAME OVER</h2>
@@ -86,10 +80,48 @@
             <button id="restartButton" type="button">RESTART <span>[ R ]</span></button>
           </div>
         </div>
-        <p class="mobile-hint">← → 로 함선을 조종하고 SPACE로 레이저를 발사하세요.</p>
       </div>
-    </section>
-  </main>
+    </div>
+
+    <!-- 하단 HUD 및 난이도 선택 바 -->
+    <aside class="hud-panel">
+      <div class="hud-block">
+        <span class="label">SCORE</span>
+        <strong id="score">0000</strong>
+      </div>
+      <div class="hud-block">
+        <span class="label">LIFE</span>
+        <div id="life" class="life-lights" aria-label="남은 생명 5개"></div>
+      </div>
+      <div class="hud-block timer-block">
+        <span class="label">MISSION TIME</span>
+        <strong><span id="time">100</span><small> SEC</small></strong>
+      </div>
+      <div class="hud-block difficulty-block">
+        <label class="difficulty-control" for="difficulty">
+          <span class="label">DIFFICULTY</span>
+          <select id="difficulty">
+            <option value="easy">하 / CADET</option>
+            <option value="normal" selected>중 / PILOT</option>
+            <option value="hard">상 / ACE</option>
+          </select>
+        </label>
+      </div>
+    </aside>
+
+    <!-- 레트로 TV 스피커 & 하단 노브 -->
+    <footer class="tv-footer">
+      <div class="speaker-grill">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="tv-knobs">
+        <div class="knob"><span class="knob-marker"></span></div>
+        <div class="knob"><span class="knob-marker"></span></div>
+      </div>
+    </footer>
+  </div>
+
   <script src="game.js"></script>
 </body>
+
 </html>
