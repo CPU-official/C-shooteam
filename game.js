@@ -20,9 +20,9 @@ const startingLife = 3;
 const maximumLife = 5;
 
 const difficultySettings = {
-  easy: { spawnEvery: 1600, speed: 0.65, minSize: 48, sizeRange: 24, fireInterval: 180, autoFire: true },
-  normal: { spawnEvery: 1200, speed: 1.15, minSize: 38, sizeRange: 22, fireInterval: 180, autoFire: true },
-  hard: { spawnEvery: 850, speed: 2.0, minSize: 30, sizeRange: 18, fireInterval: 450, autoFire: false }
+  easy: { spawnEvery: 1800, speed: 0.55, minSize: 52, sizeRange: 22, fireInterval: 180, autoFire: true },
+  normal: { spawnEvery: 1400, speed: 0.8, minSize: 38, sizeRange: 22, fireInterval: 180, autoFire: true },
+  hard: { spawnEvery: 1100, speed: 1.0, minSize: 38, sizeRange: 22, fireInterval: 220, autoFire: false }
 };
 
 const keys = { left: false, right: false, firing: false };
@@ -269,7 +269,11 @@ function gameLoop(timestamp) {
 }
 
 document.addEventListener('keydown', (event) => {
-  if (event.code === 'Enter' && !missionStarted) { startMission(); event.preventDefault(); return; }
+  if ((event.code === 'Enter' || event.code === 'Space') && !missionStarted) {
+    startMission();
+    event.preventDefault();
+    return;
+  }
   if (event.code === 'ArrowLeft') { keys.left = true; event.preventDefault(); }
   if (event.code === 'ArrowRight') { keys.right = true; event.preventDefault(); }
   if (event.code === 'Space') { if (!keys.firing) shoot(); keys.firing = true; event.preventDefault(); }
@@ -285,11 +289,34 @@ restartButton.addEventListener('click', resetGame);
 resumeButton.addEventListener('click', () => { paused = false; pauseOverlayElement.hidden = true; lastTimestamp = performance.now(); });
 endMissionButton.addEventListener('click', () => finishGame(false));
 difficultyElement.addEventListener('change', resetGame);
+// 1. startMission 함수 보완 (CSS display 처리 및 캔버스 포커스 추가)
 function startMission() {
   missionStarted = true;
   paused = false;
-  missionIntroElement.hidden = true;
+
+  // HTML hidden 속성 외에 CSS로도 확실하게 숨김 처리
+  if (missionIntroElement) {
+    missionIntroElement.style.display = 'none';
+    missionIntroElement.hidden = true;
+  }
+
   lastTimestamp = performance.now();
+  canvas.focus(); // 캔버스로 포커스 이동
+}
+
+// 3. 버튼 클릭 이벤트 확실하게 연결
+if (startButton) {
+  startButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    startMission();
+  });
+}
+
+// 4. 화면 안내 팝업 전체 어디든 클릭 시 시작되도록 추가
+if (missionIntroElement) {
+  missionIntroElement.addEventListener('click', () => {
+    if (!missionStarted) startMission();
+  });
 }
 function togglePause() {
   paused = !paused;
