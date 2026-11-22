@@ -1,0 +1,18 @@
+{
+  "name": "astra-shooting-game",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ASTRA retro shooting game desktop app",
+  "main": "main.cjs",
+  "scripts": { "start": "electron .", "dist": "electron-builder" },
+  "devDependencies": { "electron": "^45.4.1", "electron-builder": "^26.18.0" },
+  "build": {
+    "appId": "org.cpuofficial.astra",
+    "productName": "ASTRA Shooting Game",
+    "directories": { "output": "release" },
+    "files": ["main.cjs", "index.html", "game.js", "style.css", "package.json"],
+    "mac": { "target": ["dmg", "zip"] },
+    "win": { "target": ["nsis"] },
+    "linux": { "target": ["AppImage", "deb"], "category": "Game" }
+  }
+}
