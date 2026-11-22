@@ -62,6 +62,7 @@ function resetGame() {
   ufoAccumulator = 0;
   fireAccumulator = difficulty.fireInterval;
   gameOverElement.hidden = true;
+  missionIntroElement.style.display = '';
   missionIntroElement.hidden = false;
   pauseOverlayElement.hidden = true;
   updateHud();
@@ -268,65 +269,64 @@ function gameLoop(timestamp) {
   update(delta); draw(); requestAnimationFrame(gameLoop);
 }
 
-document.addEventListener('keydown', (event) => {
-  if ((event.code === 'Enter' || event.code === 'Space') && !missionStarted) {
-    startMission();
-    event.preventDefault();
-    return;
-  }
-  if (event.code === 'ArrowLeft') { keys.left = true; event.preventDefault(); }
-  if (event.code === 'ArrowRight') { keys.right = true; event.preventDefault(); }
-  if (event.code === 'Space') { if (!keys.firing) shoot(); keys.firing = true; event.preventDefault(); }
-  if ((event.code === 'KeyP' || event.code === 'Escape') && missionStarted && !gameOver) { togglePause(); event.preventDefault(); }
-  if (event.code === 'KeyR' && gameOver) resetGame();
-});
-document.addEventListener('keyup', (event) => {
-  if (event.code === 'ArrowLeft') keys.left = false;
-  if (event.code === 'ArrowRight') keys.right = false;
-  if (event.code === 'Space') keys.firing = false;
-});
 restartButton.addEventListener('click', resetGame);
 resumeButton.addEventListener('click', () => { paused = false; pauseOverlayElement.hidden = true; lastTimestamp = performance.now(); });
 endMissionButton.addEventListener('click', () => finishGame(false));
 difficultyElement.addEventListener('change', resetGame);
-// 1. startMission 함수 보완 (CSS display 처리 및 캔버스 포커스 추가)
 function startMission() {
   missionStarted = true;
   paused = false;
 
-  // HTML hidden 속성 외에 CSS로도 확실하게 숨김 처리
   if (missionIntroElement) {
     missionIntroElement.style.display = 'none';
     missionIntroElement.hidden = true;
   }
 
   lastTimestamp = performance.now();
-  canvas.focus(); // 캔버스로 포커스 이동
+  canvas.focus();
 }
 
-// 2. 키보드 이벤트 보완 (엔터 및 스페이스 입력 지원)
 document.addEventListener('keydown', (event) => {
-  // 시작 전 상태에서 Enter 또는 Space를 누르면 시작
-  if ((event.code === 'Enter' || event.code === 'Space') && !missionStarted) {
+  const key = event.key ? event.key.toLowerCase() : '';
+  const isEnter = event.code === 'Enter' || key === 'enter';
+  const isSpace = event.code === 'Space' || key === ' ';
+  const isEscape = event.code === 'Escape' || event.key === 'Esc' || key === 'escape';
+  const isPause = event.code === 'KeyP' || key === 'p';
+  const isRestart = event.code === 'KeyR' || key === 'r';
+
+  if ((isEnter || isSpace) && !missionStarted) {
     startMission();
     event.preventDefault();
     return;
   }
 
-  if (event.code === 'ArrowLeft') { keys.left = true; event.preventDefault(); }
-  if (event.code === 'ArrowRight') { keys.right = true; event.preventDefault(); }
-  if (event.code === 'Space' && missionStarted) { if (!keys.firing) shoot(); keys.firing = true; event.preventDefault(); }
-  if ((event.code === 'KeyP' || event.code === 'Escape') && missionStarted && !gameOver) { togglePause(); event.preventDefault(); }
-  if (event.code === 'KeyR' && gameOver) resetGame();
+  if (event.code === 'ArrowLeft' || key === 'arrowleft') {
+    keys.left = true;
+    event.preventDefault();
+  }
+  if (event.code === 'ArrowRight' || key === 'arrowright') {
+    keys.right = true;
+    event.preventDefault();
+  }
+  if (isSpace && missionStarted) {
+    if (!keys.firing) shoot();
+    keys.firing = true;
+    event.preventDefault();
+  }
+  if ((isPause || isEscape) && missionStarted && !gameOver) {
+    togglePause();
+    event.preventDefault();
+  }
+  if (isRestart && gameOver) resetGame();
 });
 
 document.addEventListener('keyup', (event) => {
-  if (event.code === 'ArrowLeft') keys.left = false;
-  if (event.code === 'ArrowRight') keys.right = false;
-  if (event.code === 'Space') keys.firing = false;
+  const key = event.key ? event.key.toLowerCase() : '';
+  if (event.code === 'ArrowLeft' || key === 'arrowleft') keys.left = false;
+  if (event.code === 'ArrowRight' || key === 'arrowright') keys.right = false;
+  if (event.code === 'Space' || key === ' ') keys.firing = false;
 });
 
-// 3. 버튼 클릭 이벤트 확실하게 연결
 if (startButton) {
   startButton.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -334,17 +334,10 @@ if (startButton) {
   });
 }
 
-// 4. 화면 안내 팝업 전체 어디든 클릭 시 시작되도록 추가
-if (missionIntroElement) {
-  missionIntroElement.addEventListener('click', () => {
-    if (!missionStarted) startMission();
-  });
-}
 function togglePause() {
   paused = !paused;
   pauseOverlayElement.hidden = !paused;
   if (!paused) lastTimestamp = performance.now();
 }
-startButton.addEventListener('click', startMission);
 resetGame();
 requestAnimationFrame(gameLoop);
