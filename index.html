@@ -43,18 +43,19 @@
       <!-- 게임 캔버스 영역 -->
       <div class="board-wrap">
         <div class="canvas-frame">
-          <canvas id="gameCanvas" width="900" height="600" aria-label="게임 화면"></canvas>
+          <canvas id="gameCanvas" width="900" height="600" tabindex="0" aria-label="게임 화면"></canvas>
 
           <!-- 미션 시작 화면 -->
           <div id="missionIntro" class="mission-intro">
             <div class="intro-panel">
               <p class="over-kicker">ASTRA // FLIGHT BRIEFING</p>
               <h2>소행성 파괴 작전</h2>
-              <p class="intro-copy">우주선을 조종해 소행성을 파괴하고<br>UFO를 맞혀 생명을 회복하세요.</p>
+              <p class="intro-copy">100초 동안 소행성을 격추하고<br>바닥을 통과하지 않도록 우주선을 조종하세요.</p>
               <div class="briefing-grid">
                 <span><kbd>←</kbd><kbd>→</kbd> 이동</span>
                 <span><kbd>SPACE</kbd> 레이저 발사</span>
                 <span><b class="ufo-mark">UFO</b> 명중 시 +1 LIFE</span>
+                <span><kbd>ESC</kbd> 또는 <kbd>P</kbd> 일시정지</span>
               </div>
               <button id="startButton" type="button">START MISSION <span>[ ENTER ]</span></button>
             </div>
