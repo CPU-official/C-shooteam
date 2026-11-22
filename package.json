@@ -1,6 +1,6 @@
 {
   "name": "astra-shooting-game",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "ASTRA retro shooting game desktop app",
   "main": "main.cjs",
@@ -13,6 +13,10 @@
     "files": ["main.cjs", "index.html", "game.js", "style.css", "package.json"],
     "mac": { "target": ["dmg", "zip"] },
     "win": { "target": ["nsis"] },
-    "linux": { "target": ["AppImage", "deb"], "category": "Game" }
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "category": "Game",
+      "maintainer": "CPU Official"
+    }
   }
 }
